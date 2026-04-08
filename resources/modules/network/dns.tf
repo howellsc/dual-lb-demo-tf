@@ -12,7 +12,7 @@ resource "google_dns_managed_zone" "private_zone" {
 }
 
 resource "google_dns_record_set" "lb_dns" {
-  name         = "${var.name}-app.${google_dns_managed_zone.private_zone.dns_name}" # app.mycompany.internal.
+  name         = "${var.name}-app.${google_dns_managed_zone.private_zone.dns_name}" # 'var.name'-app.natwest.internal.
   managed_zone = google_dns_managed_zone.private_zone.name
   type         = "A"
   ttl          = 300
