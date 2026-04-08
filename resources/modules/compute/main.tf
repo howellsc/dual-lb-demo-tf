@@ -76,6 +76,24 @@ resource "google_compute_instance" "web_servers" {
   tags                    = ["internal-app"]
 }
 
+resource "google_compute_instance" "test-server" {
+  name         = "${var.name}-test-server"
+  machine_type = "e2-medium"
+  zone         = "${var.region}-a"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    subnetwork = var.subnetwork
+  }
+
+  tags = ["ssh", "client-vm"]
+}
+
 resource "google_compute_address" "internal_reserved_ips" {
   count        = local.vm_count
   name         = "${var.name}-reserved-ip-${count.index + 1}"
