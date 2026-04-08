@@ -25,15 +25,19 @@ module "compute" {
 
   name       = var.name
   region     = var.region
+  vpc_id     = module.network.vpc_id
   subnetwork = module.network.subnet_id
+  zone       = var.zone
 }
 
 module "load_balancing" {
   source = "./modules/lb"
 
-  lb_name        = var.name
-  region         = var.region
-  vpc_id         = module.network.vpc_id
-  subnet_id      = module.network.subnet_id
-  instance_group = module.compute.instance_group
+  lb_name   = var.name
+  region    = var.region
+  vpc_id    = module.network.vpc_id
+  subnet_id = module.network.subnet_id
+  l4_neg    = module.compute.l4_neg
+  l7_neg    = module.compute.l7_neg
+
 }

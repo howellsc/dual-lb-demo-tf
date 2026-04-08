@@ -14,6 +14,10 @@ variable "subnet_id" {
   type = string
 }
 
-variable "instance_group" {
+variable "l4_neg" {
+  type = string
+}
+
+variable "l7_neg" {
   type = string
 }

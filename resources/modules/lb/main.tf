@@ -26,9 +26,10 @@ resource "google_compute_region_backend_service" "l7_backend" {
   load_balancing_scheme = "INTERNAL_MANAGED"
 
   backend {
-    group           = var.instance_group
-    balancing_mode  = "UTILIZATION"
-    capacity_scaler = 1.0
+    group                 = var.l7_neg
+    balancing_mode        = "RATE"
+    max_rate_per_endpoint = 100
+    capacity_scaler       = 1.0
   }
   health_checks = [google_compute_region_health_check.hc.id]
 }
@@ -62,12 +63,11 @@ resource "google_compute_region_backend_service" "l4_backend" {
   name                  = "${var.lb_name}-l4-backend"
   region                = var.region
   protocol              = "TCP"
-  load_balancing_scheme = "INTERNAL_MANAGED"
+  load_balancing_scheme = "INTERNAL"
 
   backend {
-    group           = var.instance_group
-    balancing_mode  = "UTILIZATION" # Now they match!
-    capacity_scaler = 1.0
+    group          = var.l4_neg
+    balancing_mode = "CONNECTION" # Now they match!
   }
   health_checks = [google_compute_region_health_check.hc.id]
 }
@@ -77,16 +77,10 @@ resource "google_compute_forwarding_rule" "l4_rule" {
   name                  = "${var.lb_name}-l4-int-rule"
   region                = var.region
   ip_address            = google_compute_address.lb_frontend_ip.address # Same IP!
-  load_balancing_scheme = "INTERNAL_MANAGED"
-  port_range            = "6060"
+  load_balancing_scheme = "INTERNAL"
+  ports                 = ["6060"]
   ip_protocol           = "TCP"
   network               = var.vpc_id
   subnetwork            = var.subnet_id
-  target                = google_compute_region_target_tcp_proxy.l4_proxy.id
-}
-
-resource "google_compute_region_target_tcp_proxy" "l4_proxy" {
-  name            = "${var.lb_name}-l4-proxy-target"
-  region          = var.region
-  backend_service = google_compute_region_backend_service.l4_backend.id
+  backend_service       = google_compute_region_backend_service.l4_backend.id
 }
