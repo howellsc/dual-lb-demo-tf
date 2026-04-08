@@ -7,3 +7,8 @@ variable "region" {
   description = "The region where resources will be created"
   type        = string
 }
+
+variable "lb_ip" {
+  description = "Load balancer IP address"
+  type = string
+}

@@ -1,3 +1,13 @@
+resource "google_compute_address" "lb_frontend_ip" {
+  name         = "${var.lb_name}-lb-frontend-static-ip"
+  subnetwork   = var.subnet_id
+  address_type = "INTERNAL"
+  region       = var.region
+  # SHARED_LOADBALANCER_VIP allows you to use this same IP
+  # for both your L4 and L7 forwarding rules.
+  purpose = "SHARED_LOADBALANCER_VIP"
+}
+
 # Shared Health Check
 resource "google_compute_region_health_check" "hc" {
   name   = "${var.lb_name}-internal-hc"
@@ -38,6 +48,7 @@ resource "google_compute_region_target_http_proxy" "l7_proxy" {
 resource "google_compute_forwarding_rule" "l7_rule" {
   name                  = "${var.lb_name}-l7-int-rule"
   region                = var.region
+  ip_address            = google_compute_address.lb_frontend_ip.address # Same IP!
   load_balancing_scheme = "INTERNAL_MANAGED"
   port_range            = "80"
   target                = google_compute_region_target_http_proxy.l7_proxy.id
@@ -65,6 +76,7 @@ resource "google_compute_region_backend_service" "l4_backend" {
 resource "google_compute_forwarding_rule" "l4_rule" {
   name                  = "${var.lb_name}-l4-int-rule"
   region                = var.region
+  ip_address            = google_compute_address.lb_frontend_ip.address # Same IP!
   load_balancing_scheme = "INTERNAL_MANAGED"
   port_range            = "6060"
   ip_protocol           = "TCP"

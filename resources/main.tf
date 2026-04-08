@@ -17,6 +17,7 @@ module "network" {
 
   name   = var.name
   region = var.region
+  lb_ip  = module.load_balancing.lb_ip
 }
 
 module "compute" {
