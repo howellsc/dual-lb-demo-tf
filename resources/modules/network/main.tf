@@ -10,6 +10,19 @@ resource "google_compute_subnetwork" "app_subnet" {
   network       = google_compute_network.vpc.id
 }
 
+resource "google_compute_subnetwork" "proxy_only" {
+  name          = "${var.name}-proxy-only-subnet"
+  ip_cidr_range = "10.129.0.0/23"
+  region        = var.region
+  purpose       = "REGIONAL_MANAGED_PROXY"
+  role          = "ACTIVE"
+  network       = google_compute_network.vpc.id
+
+  depends_on = [
+    google_compute_network.vpc
+  ]
+}
+
 # 1. Allow Google Health Checks
 # This range is constant across all of Google Cloud
 resource "google_compute_firewall" "allow_health_checks" {
