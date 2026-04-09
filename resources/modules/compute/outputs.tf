@@ -1,7 +1,6 @@
-output "l4_neg" {
-  value = google_compute_network_endpoint_group.neg_l4.id
-}
-
-output "l7_neg" {
-  value = google_compute_network_endpoint_group.neg_l7.id
+output "instance_summary" {
+  value = {
+    for inst in google_compute_instance.web_servers :
+    inst.name => inst.network_interface[0].network_ip
+  }
 }

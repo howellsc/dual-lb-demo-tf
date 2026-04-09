@@ -1,7 +1,3 @@
-locals {
-  vm_count = 2
-}
-
 # resource "google_compute_instance_template" "tpl" {
 #   name         = "${var.name}-internal-app-template"
 #   machine_type = "e2-medium"
@@ -55,7 +51,7 @@ locals {
 # }
 
 resource "google_compute_instance" "web_servers" {
-  count        = local.vm_count
+  count        = var.compute_instances
   name         = "${var.name}-server-${count.index + 1}"
   machine_type = "e2-medium"
   zone         = "${var.region}-a"
@@ -95,46 +91,9 @@ resource "google_compute_instance" "test-server" {
 }
 
 resource "google_compute_address" "internal_reserved_ips" {
-  count        = local.vm_count
+  count        = var.compute_instances
   name         = "${var.name}-reserved-ip-${count.index + 1}"
   subnetwork   = var.subnetwork
   address_type = "INTERNAL"
   region       = var.region
-}
-
-# 1. NEG for L7 (Port 80)
-resource "google_compute_network_endpoint_group" "neg_l7" {
-  name                  = "neg-l7-http"
-  network               = var.vpc_id
-  subnetwork            = var.subnetwork
-  zone                  = var.zone
-  network_endpoint_type = "GCE_VM_IP_PORT" # Specifies IP + Port 80
-}
-
-# 2. NEG for L4 (Port 6060)
-resource "google_compute_network_endpoint_group" "neg_l4" {
-  name                  = "neg-l4-data"
-  network               = var.vpc_id
-  subnetwork            = var.subnetwork
-  zone                  = "us-central1-a"
-  network_endpoint_type = "GCE_VM_IP" # Specifies IP only (Passthrough)
-}
-
-# 3. Attach your 4 "Pet" VMs to BOTH NEGs
-resource "google_compute_network_endpoint" "endpoints_l7" {
-  count                  = local.vm_count
-  network_endpoint_group = google_compute_network_endpoint_group.neg_l7.name
-  instance               = google_compute_instance.web_servers[count.index].name
-  port                   = 80
-  ip_address             = google_compute_instance.web_servers[count.index].network_interface[0].network_ip
-  zone                   = var.zone
-}
-
-resource "google_compute_network_endpoint" "endpoints_l4" {
-  count                  = local.vm_count
-  network_endpoint_group = google_compute_network_endpoint_group.neg_l4.name
-  instance               = google_compute_instance.web_servers[count.index].name
-  # No port specified here for GCE_VM_IP type
-  ip_address = google_compute_instance.web_servers[count.index].network_interface[0].network_ip
-  zone       = var.zone
 }

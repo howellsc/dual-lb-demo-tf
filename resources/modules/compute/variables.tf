@@ -19,3 +19,8 @@ variable "subnetwork" {
 variable "vpc_id" {
   type = string
 }
+
+variable "compute_instances" {
+  description = "Number of VMs"
+  type        = number
+}
