@@ -58,7 +58,7 @@ resource "google_compute_instance" "web_servers" {
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "rocky-linux-cloud/rocky-linux-9"
     }
   }
 
@@ -68,7 +68,7 @@ resource "google_compute_instance" "web_servers" {
     network_ip = google_compute_address.internal_reserved_ips[count.index].address
   }
 
-  metadata_startup_script = "apt-get update && apt-get install -y apache2"
+  metadata_startup_script = file("${path.module}/scripts/startup.sh")
   tags                    = ["internal-app"]
 }
 
@@ -79,13 +79,15 @@ resource "google_compute_instance" "test-server" {
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "rocky-linux-cloud/rocky-linux-9"
     }
   }
 
   network_interface {
     subnetwork = var.subnetwork
   }
+
+  metadata_startup_script = "firewall-cmd --permanent --add-service=ssh && firewall-cmd --reload"
 
   tags = ["ssh", "client-vm"]
 }

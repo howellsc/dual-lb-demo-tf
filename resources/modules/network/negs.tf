@@ -12,7 +12,7 @@ resource "google_compute_network_endpoint_group" "neg_l4" {
   name                  = "${var.name}-neg-l4-data"
   network               = google_compute_network.vpc.id
   subnetwork            = google_compute_subnetwork.app_subnet.id
-  zone                  = "us-central1-a"
+  zone                  = var.zone
   network_endpoint_type = "GCE_VM_IP" # Specifies IP only (Passthrough)
 }
 
