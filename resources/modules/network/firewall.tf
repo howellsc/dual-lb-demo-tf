@@ -38,7 +38,7 @@ resource "google_compute_firewall" "allow_l4_client_traffic" {
 
   allow {
     protocol = "tcp"
-    ports    = ["6060"]
+    ports    = ["6500", "6501"]
   }
 }
 
@@ -54,7 +54,7 @@ resource "google_compute_firewall" "allow_internal_clients" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "6060"]
+    ports    = ["80", "6500", "6501"]
   }
 }
 

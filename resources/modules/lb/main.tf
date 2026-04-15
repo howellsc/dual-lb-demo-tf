@@ -66,7 +66,7 @@ resource "google_compute_region_backend_service" "l4_backend" {
 
   backend {
     group          = var.l4_instance_group
-    balancing_mode = "CONNECTION" # Now they match!
+    balancing_mode = "CONNECTION"
   }
   health_checks = [google_compute_region_health_check.hc.id]
 }
