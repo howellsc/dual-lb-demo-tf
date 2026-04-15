@@ -4,3 +4,7 @@ output "instance_summary" {
     inst.name => inst.network_interface[0].network_ip
   }
 }
+
+output "instance_group" {
+  value = google_compute_instance_group.web_servers_instance_group.id
+}

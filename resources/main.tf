@@ -40,10 +40,10 @@ module "compute" {
 module "load_balancing" {
   source = "./modules/lb"
 
-  lb_name   = var.name
-  region    = var.region
-  vpc_id    = module.network.vpc_id
-  subnet_id = module.network.subnet_id
-  l4_neg    = module.network.l4_neg
-  l7_neg    = module.network.l7_neg
+  lb_name           = var.name
+  region            = var.region
+  vpc_id            = module.network.vpc_id
+  subnet_id         = module.network.subnet_id
+  l4_instance_group = module.compute.instance_group
+  l7_neg            = module.network.l7_neg
 }

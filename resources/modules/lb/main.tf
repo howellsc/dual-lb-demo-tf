@@ -35,19 +35,19 @@ resource "google_compute_region_backend_service" "l7_backend" {
 }
 
 resource "google_compute_region_url_map" "l7_map" {
-  name            = "${var.lb_name}-l7-int-map"
+  name            = "${var.lb_name}-l7-url-map"
   region          = var.region
   default_service = google_compute_region_backend_service.l7_backend.id
 }
 
 resource "google_compute_region_target_http_proxy" "l7_proxy" {
-  name    = "${var.lb_name}-l7-int-proxy"
+  name    = "${var.lb_name}-l7-http-proxy"
   region  = var.region
   url_map = google_compute_region_url_map.l7_map.id
 }
 
 resource "google_compute_forwarding_rule" "l7_rule" {
-  name                  = "${var.lb_name}-l7-int-rule"
+  name                  = "${var.lb_name}-l7-forwarding-rule"
   region                = var.region
   ip_address            = google_compute_address.lb_frontend_ip.address # Same IP!
   load_balancing_scheme = "INTERNAL_MANAGED"
@@ -57,8 +57,7 @@ resource "google_compute_forwarding_rule" "l7_rule" {
   subnetwork            = var.subnet_id
 }
 
-# --- L4 Internal (Port 6060) ---
-# We use INTERNAL_MANAGED here so it is compatible with the L7 LB
+# --- L4 Internal (Port 6500 6501) ---
 resource "google_compute_region_backend_service" "l4_backend" {
   name                  = "${var.lb_name}-l4-backend"
   region                = var.region
@@ -66,7 +65,7 @@ resource "google_compute_region_backend_service" "l4_backend" {
   load_balancing_scheme = "INTERNAL"
 
   backend {
-    group          = var.l4_neg
+    group          = var.l4_instance_group
     balancing_mode = "CONNECTION" # Now they match!
   }
   health_checks = [google_compute_region_health_check.hc.id]
@@ -74,11 +73,11 @@ resource "google_compute_region_backend_service" "l4_backend" {
 
 # --- L4 Forwarding Rule ---
 resource "google_compute_forwarding_rule" "l4_rule" {
-  name                  = "${var.lb_name}-l4-int-rule"
+  name                  = "${var.lb_name}-l4-forwarding-rule"
   region                = var.region
   ip_address            = google_compute_address.lb_frontend_ip.address # Same IP!
   load_balancing_scheme = "INTERNAL"
-  ports                 = ["6060"]
+  ports                 = ["6500", "6501"]
   ip_protocol           = "TCP"
   network               = var.vpc_id
   subnetwork            = var.subnet_id
