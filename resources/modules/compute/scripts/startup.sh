@@ -1,10 +1,9 @@
 #!/bin/bash
 # Update the system
 dnf update -y
-dnf install httpd policycoreutils-python-utils -y
 
 # Install Apache (httpd)
-dnf install httpd -y
+dnf install httpd policycoreutils-python-utils -y
 
 # REMOVE the default "Listen 80" from the main httpd.conf
 # This prevents the "multiple Listeners" syntax error
