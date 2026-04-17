@@ -13,7 +13,7 @@ resource "google_compute_region_health_check" "hc" {
   name   = "${var.lb_name}-internal-hc"
   region = var.region
   http_health_check {
-    port_name = "http"
+    port = 90
   }
 }
 
