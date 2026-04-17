@@ -1,6 +1,6 @@
 resource "google_dns_managed_zone" "private_zone" {
   name        = "${var.name}-internal-services-zone"
-  dns_name    = "natwest.internal." # Must end with a dot
+  dns_name    = "nwm.infra.net." # Must end with a dot
   description = "Private DNS zone for internal load balancers"
   visibility  = "private"
 
