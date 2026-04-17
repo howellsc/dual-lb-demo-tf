@@ -57,7 +57,7 @@ systemctl enable --now httpd
 
 # --- Local Firewall Configuration ---
 # Open Port 8500 for the L7 Load Balancer
-firewall-cmd --permanent --add-service=8500/tcp
+firewall-cmd --permanent --add-port=8500/tcp
 # Open Port 6060 for your L4 Data Traffic
 firewall-cmd --permanent --add-port=6060/tcp
 # Open Port 6061 for your L4 Data Traffic
