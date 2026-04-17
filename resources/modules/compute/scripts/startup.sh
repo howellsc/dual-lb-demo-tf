@@ -22,21 +22,21 @@ Listen 6501
         AllowOverride None
         Require all granted
     </Directory>
-    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 90"
+    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 8500\n"
     RewriteEngine On
     RewriteRule ^.*$ - [R=200,L]
 </VirtualHost>
 
 <VirtualHost *:6500>
     DocumentRoot "/var/www/html/port6500"
-    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 6500"
+    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 6500\n"
     RewriteEngine On
     RewriteRule ^.*$ - [R=200,L]
 </VirtualHost>
 
 <VirtualHost *:6501>
     DocumentRoot "/var/www/html/port6501"
-    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 6501"
+    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 6501\n"
     RewriteEngine On
     RewriteRule ^.*$ - [R=200,L]
 </VirtualHost>
