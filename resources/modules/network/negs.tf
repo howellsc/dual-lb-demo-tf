@@ -22,7 +22,7 @@ resource "google_compute_network_endpoint" "endpoints_l7" {
   network_endpoint_group = google_compute_network_endpoint_group.neg_l7.name
   instance               = each.key   # The Name (e.g., "server-1")
   ip_address             = each.value # The Reserved IP (e.g., "10.0.1.10")
-  port                   = 80
+  port                   = 8500
   zone                   = var.zone
 }
 
