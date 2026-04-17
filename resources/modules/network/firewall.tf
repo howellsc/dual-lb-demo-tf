@@ -9,7 +9,7 @@ resource "google_compute_firewall" "allow_health_checks" {
 
   allow {
     protocol = "tcp"
-    ports    = ["90"]
+    ports    = ["8500"]
   }
 }
 
@@ -25,7 +25,7 @@ resource "google_compute_firewall" "allow_proxy_traffic" {
 
   allow {
     protocol = "tcp"
-    ports    = ["90"]
+    ports    = ["8500"]
   }
 }
 
@@ -54,7 +54,7 @@ resource "google_compute_firewall" "allow_internal_clients" {
 
   allow {
     protocol = "tcp"
-    ports    = ["90", "6500", "6501"]
+    ports    = ["8500", "6500", "6501"]
   }
 }
 

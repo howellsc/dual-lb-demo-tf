@@ -4,7 +4,7 @@ resource "google_compute_instance_group" "web_servers_instance_group" {
 
   named_port {
     name = "http"
-    port = 90
+    port = 8500
   }
 }
 

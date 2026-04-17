@@ -10,15 +10,15 @@ dnf install httpd policycoreutils-python-utils -y
 sed -i 's/^Listen 80/# Listen 80/' /etc/httpd/conf/httpd.conf
 
 # Configure Ports and VirtualHosts
-# We must tell Apache to listen on 80, 6500, and 6501 explicitly
+# We must tell Apache to listen on 8500, 6500, and 6501 explicitly
 cat <<EOF > /etc/httpd/conf.d/multi_port.conf
-Listen 90
+Listen 8500
 Listen 6500
 Listen 6501
 
-<VirtualHost *:90>
-    DocumentRoot "/var/www/html/port90"
-    <Directory "/var/www/html/port90">
+<VirtualHost *:8500>
+    DocumentRoot "/var/www/html/port8500"
+    <Directory "/var/www/html/port8500">
         AllowOverride None
         Require all granted
     </Directory>
@@ -43,9 +43,9 @@ Listen 6501
 EOF
 
 # 3. Create dummy directories for the DocumentRoots
-mkdir -p /var/www/html/port{90,6500,6501}
+mkdir -p /var/www/html/port{8500,6500,6501}
 
-semanage port -a -t http_port_t -p tcp 90 || semanage port -m -t http_port_t -p tcp 90
+semanage port -a -t http_port_t -p tcp 8500 || semanage port -m -t http_port_t -p tcp 8500
 semanage port -a -t http_port_t -p tcp 6500 || semanage port -m -t http_port_t -p tcp 6500
 semanage port -a -t http_port_t -p tcp 6501 || semanage port -m -t http_port_t -p tcp 6501
 
@@ -56,8 +56,8 @@ systemctl enable --now httpd
 # echo "Hello from $(hostname) running Rocky Linux" > /var/www/html/index.html
 
 # --- Local Firewall Configuration ---
-# Open Port 80 for the L7 Load Balancer
-firewall-cmd --permanent --add-service=90/tcp
+# Open Port 8500 for the L7 Load Balancer
+firewall-cmd --permanent --add-service=8500/tcp
 # Open Port 6060 for your L4 Data Traffic
 firewall-cmd --permanent --add-port=6060/tcp
 # Open Port 6061 for your L4 Data Traffic
