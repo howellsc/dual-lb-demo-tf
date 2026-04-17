@@ -1,6 +1,11 @@
 resource "google_compute_instance_group" "web_servers_instance_group" {
   name      = "${var.name}-instance-group"
   instances = google_compute_instance.web_servers[*].id
+
+  named_port {
+    name = "http"
+    port = 90
+  }
 }
 
 resource "google_compute_instance" "web_servers" {

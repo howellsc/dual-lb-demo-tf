@@ -13,7 +13,7 @@ resource "google_compute_region_health_check" "hc" {
   name   = "${var.lb_name}-internal-hc"
   region = var.region
   http_health_check {
-    port = 80
+    port_name = "http"
   }
 }
 
@@ -24,6 +24,7 @@ resource "google_compute_region_backend_service" "l7_backend" {
   region                = var.region
   protocol              = "HTTP"
   load_balancing_scheme = "INTERNAL_MANAGED"
+  port_name = "http"
 
   backend {
     group                 = var.l7_neg

@@ -5,11 +5,11 @@ resource "google_compute_firewall" "allow_health_checks" {
   network       = google_compute_network.vpc.id
   direction     = "INGRESS"
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
-  target_tags   = ["internal-app"] # Apply this tag to your GCE instances
+  target_tags   = ["internal-app"]
 
   allow {
     protocol = "tcp"
-    ports    = ["80"]
+    ports    = ["90"]
   }
 }
 
@@ -19,13 +19,13 @@ resource "google_compute_firewall" "allow_proxy_traffic" {
   name      = "${var.name}-allow-proxy-to-backends"
   network   = google_compute_network.vpc.id
   direction = "INGRESS"
-  # Use the CIDR of the REGIONAL_MANAGED_PROXY subnet you created
+  # Use the CIDR of the REGIONAL_MANAGED_PROXY subnet
   source_ranges = ["10.129.0.0/23"]
   target_tags   = ["internal-app"]
 
   allow {
     protocol = "tcp"
-    ports    = ["80"]
+    ports    = ["90"]
   }
 }
 
@@ -54,7 +54,7 @@ resource "google_compute_firewall" "allow_internal_clients" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "6500", "6501"]
+    ports    = ["90", "6500", "6501"]
   }
 }
 

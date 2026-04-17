@@ -12,17 +12,17 @@ sed -i 's/^Listen 80/# Listen 80/' /etc/httpd/conf/httpd.conf
 # Configure Ports and VirtualHosts
 # We must tell Apache to listen on 80, 6500, and 6501 explicitly
 cat <<EOF > /etc/httpd/conf.d/multi_port.conf
-Listen 80
+Listen 90
 Listen 6500
 Listen 6501
 
-<VirtualHost *:80>
-    DocumentRoot "/var/www/html/port80"
-    <Directory "/var/www/html/port80">
+<VirtualHost *:90>
+    DocumentRoot "/var/www/html/port90"
+    <Directory "/var/www/html/port90">
         AllowOverride None
         Require all granted
     </Directory>
-    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 80"
+    ErrorDocument 200 "Response from $(hostname) running Rocky Linux on Port 90"
     RewriteEngine On
     RewriteRule ^.*$ - [R=200,L]
 </VirtualHost>
@@ -43,8 +43,9 @@ Listen 6501
 EOF
 
 # 3. Create dummy directories for the DocumentRoots
-mkdir -p /var/www/html/port{80,6500,6501}
+mkdir -p /var/www/html/port{90,6500,6501}
 
+semanage port -a -t http_port_t -p tcp 90 || semanage port -m -t http_port_t -p tcp 90
 semanage port -a -t http_port_t -p tcp 6500 || semanage port -m -t http_port_t -p tcp 6500
 semanage port -a -t http_port_t -p tcp 6501 || semanage port -m -t http_port_t -p tcp 6501
 
@@ -56,7 +57,7 @@ systemctl enable --now httpd
 
 # --- Local Firewall Configuration ---
 # Open Port 80 for the L7 Load Balancer
-firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=90/tcp
 # Open Port 6060 for your L4 Data Traffic
 firewall-cmd --permanent --add-port=6060/tcp
 # Open Port 6061 for your L4 Data Traffic
